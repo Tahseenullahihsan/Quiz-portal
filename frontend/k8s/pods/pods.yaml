@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name:  react_app_v2 
+  # this is hte dictionary
+  labels:
+    app: react_app_v2
+    type: frontend
+    # insted of you can user her tier: frontend, backend, database
+spec:
+  containers:
+  # the - represents a list item in YAML
+  - name: react_app_v2 
+    image: react_app_v2 :latest
+    ports:
+    - containerPort: 80

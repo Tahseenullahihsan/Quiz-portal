@@ -1,0 +1,46 @@
+# Node.js (backend and frontend)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+
+# dotenv files (keep secrets out of Git)
+.env
+.env.*.local
+.env.local
+
+# Logs
+logs
+*.log
+debug.log
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# OS-related
+.DS_Store
+Thumbs.db
+
+# Editor-related
+.vscode/
+.idea/
+*.swp
+
+# Optional: for React frontend
+# React build output
+frontend/build/
+
+# Optional: for Next.js
+.next/
+
+# Optional: coverage reports
+coverage/
+
+# Optional: test output
+jest-test-results.json
+
+# Optional: docker stuff
+docker-compose.override.yml

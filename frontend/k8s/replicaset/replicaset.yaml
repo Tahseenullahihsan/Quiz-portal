@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Replicacotroller
+metadata:
+  name: react_app_v2
+  labels:
+    app: react_app_v2
+    type: frontend
+spec:
+# remember that the templet and replicas are the direct chlidren of the spec
+  # the template is the same as the pod
+  # the replicas is the number of pods that you want to run
+  # the selector is used to match the pods that are created by this replicaset
+  template:
+    metadata:
+      labels:
+        app: react_app_v2
+        type: frontend
+    spec:
+      containers:
+      - name: react_app_v2
+        image: react_app_v2:latest
+        ports:
+        - containerPort: 80
+  replicas: 3
+  # replicaset is need the selecter 
+  # the selectore the major diffrence between  the replicacontroller and replicaset
+  selector:
+    matchLabels:
+    # selectore and lebels are the same to ensure that three frontend containers are created
+      app: react_app_v2
+      type: frontend
