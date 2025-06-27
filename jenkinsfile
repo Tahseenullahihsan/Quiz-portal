@@ -1,0 +1,133 @@
+pipeline {
+    agent any
+
+    environment {
+        KUBECONFIG = "/var/lib/jenkins/.kube/config"
+        SONAR_HOST_URL = "http://172.18.86.241:9000"
+        IMAGE_NAME = "tahseen176/three-tier-frontend"
+        IMAGE_TAG = "v2"
+    }
+
+    stages {
+        stage('Clone GitHub Code') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Tahseenullahihsan/Quiz-portal'
+            }
+        }
+
+        /*
+        stage('Security Audit') {
+            steps {
+                echo "Running frontend audit"
+                sh '''
+                cd frontend
+                npm audit || true
+                '''
+
+                echo "Running backend audit"
+                sh '''
+                cd backend
+                npm audit || true
+                '''
+            }
+        }
+
+        stage('Generate Audit Report') {
+            steps {
+                echo "Generating HTML audit report for frontend"
+                sh '''#!/bin/bash
+                    cd frontend
+                    npm install npm-audit-html
+                    npm audit --json > audit.json
+                    npx npm-audit-html -i audit.json -o audit-report.html
+                '''
+            }
+        }
+
+        stage('SonarQube Scan') {
+            steps {
+                withCredentials([string(credentialsId: '3tierSonar..', variable: 'SONAR_TOKEN')]) {
+                    sh """
+                    cd frontend
+                    npx @sonar/scan \
+                    -Dsonar.host.url=$SONAR_HOST_URL \
+                    -Dsonar.token=$SONAR_TOKEN \
+                    -Dsonar.projectKey=quiz-portal \
+                    -Dsonar.projectName=quiz-portal \
+                    -Dsonar.sources=.
+                    """
+                }
+            }
+        }
+        */
+        /*
+
+        stage("Build Frontend Docker image") {
+            steps {
+                echo "🔨 building docker image for frontend"
+                sh """
+                cd frontend
+                docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .
+                """
+            }
+        }
+
+        stage("Push Frontend Docker Image to Docker Hub") {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                    script {
+                        sh """
+                        echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+                        docker push ${IMAGE_NAME}:${IMAGE_TAG}
+                        docker logout
+                        """
+                    }
+                }
+            }
+        } */
+    }
+
+    post {
+        /* always {
+            archiveArtifacts artifacts: 'frontend/audit-report.html', fingerprint: true
+        } */
+
+        success {
+          /*  echo "✅ SonarQube analysis for frontend completed!"
+            echo "📊 View the report at: http://172.18.86.241:9000/dashboard?id=quiz-portal"    */
+
+            emailext(
+                subject: "✅ Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <p>Hello Team,</p>
+                    <p>The Jenkins job <b>${env.JOB_NAME}</b> completed successfully.</p>
+                    <p>Build Number: ${env.BUILD_NUMBER}</p>
+                    <p>View it here: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <br><p>Regards,<br>Jenkins</p>
+                """,
+                mimeType: 'text/html',
+                to: 'tahseenislamian900@gmail.com'
+            )
+        }
+
+        failure {
+          /*   echo "❌ SonarQube analysis failed. Check logs or Sonar UI."
+                          */
+            emailext(
+                subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    <p>Hello Team,</p>
+                    <p>The Jenkins job <b>${env.JOB_NAME}</b> has <span style='color:red;'>FAILED</span>.</p>
+                    <p>Build Number: ${env.BUILD_NUMBER}</p>
+                    <p>View the logs: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                    <br><p>Regards,<br>Jenkins</p>
+                """,
+                mimeType: 'text/html',
+                from: 'tahseenislamian900@gmail.com',
+                to: 'tahseenislamian900@gmail.com'
+            )
+        }
+    }
+}
+
