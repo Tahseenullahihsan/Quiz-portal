@@ -16,7 +16,7 @@ pipeline {
             }
         }
 
-        /*
+       
         stage('Security Audit') {
             steps {
                 echo "Running frontend audit"
@@ -60,8 +60,8 @@ pipeline {
                 }
             }
         }
-        */
-        /*
+       
+      
 
         stage("Build Frontend Docker image") {
             steps {
@@ -85,17 +85,17 @@ pipeline {
                     }
                 }
             }
-        } */
+        } 
     }
 
     post {
-        /* always {
+        always {
             archiveArtifacts artifacts: 'frontend/audit-report.html', fingerprint: true
-        } */
+        }
 
         success {
-          /*  echo "✅ SonarQube analysis for frontend completed!"
-            echo "📊 View the report at: http://172.18.86.241:9000/dashboard?id=quiz-portal"    */
+          echo "✅ SonarQube analysis for frontend completed!"
+            echo "📊 View the report at: http://172.18.86.241:9000/dashboard?id=quiz-portal"  
 
             emailext(
                 subject: "✅ Build Successful: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
@@ -112,8 +112,8 @@ pipeline {
         }
 
         failure {
-          /*   echo "❌ SonarQube analysis failed. Check logs or Sonar UI."
-                          */
+            echo "❌ SonarQube analysis failed. Check logs or Sonar UI."
+                         
             emailext(
                 subject: "❌ Build Failed: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                 body: """
